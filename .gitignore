@@ -1,0 +1,51 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+env/
+venv/
+.venv/
+.env/
+
+# IDE settings
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# MyPy and Pyright
+.mypy_cache/
+.pyright/
+
+# Testing and coverage
+.coverage
+.coverage.*
+nosetests.xml
+pytest.xml
+*.cover
+*.log
+
+# Dependency files
+Pipfile.lock
+poetry.lock
+requirements.txt
+
+# Local environment variables
+.env
+*.env
+
+# Docker files
+docker-compose.override.yml
+Dockerfile.local
+
+# VS Code settings
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
+
+# Pytest cache
+.pytest_cache/
