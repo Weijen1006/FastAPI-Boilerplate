@@ -13,6 +13,7 @@ class APISuccessResponse(BaseModel):
     statusCode: int = 200
     data: Optional[Union[List[Dict[str, Any]], Dict[str, Any]]] = []
     message: Optional[str] = "success"
+    pagination: Optional[Pagination] = None
 
     def __init__(self, status: str = "success", status_code: int = 200, message: str = "success", data: Any = None):
         super().__init__()
@@ -28,4 +29,18 @@ class APIErrorResponse(BaseModel):
     data: Optional[Union[List[Dict[str, Any]], Dict[str,Any]]] = []
     message: Optional[str] = "error"
     errorObject: Optional [Dict[str, Any]] = None
+    requestId: str
+
+class HTTPErrorDetails(BaseModel):
+    message: Optional[str] = None
+    details: Optional[str] = None
+    timestamp: Optional[str] = None
+    path: Optional[str] = None
+    requestBody: Optional[str] = None
+    requestHeader: Optional[str] = None
+
+class HTTPErrorResponse(BaseModel):
+    status: str = "error"
+    statusCode: int = "400"
+    error: HTTPErrorDetails
     requestId: str

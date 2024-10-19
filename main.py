@@ -1,12 +1,14 @@
-
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from fastapi.exceptions import RequestValidationError
 import uvicorn
 from controllers.items import router as item_router
 from controllers.responses import router as response_router
 from utils.logger import LoggerUtils, logger
 from models.exception import APIErrorException
-from middlewares.exceptions import APIExceptionHandler
+from middlewares.request_logger import LogRequestHandler
+from middlewares.exceptions import APIExceptionHandler, HTTPExceptionHandler, GlobalExceptionHandler, DataValidationExceptionHandler
+from configs import settings
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -20,15 +22,32 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+app.middleware("http")(LogRequestHandler)
+
 app.add_exception_handler(APIErrorException, APIExceptionHandler)
+app.add_exception_handler(HTTPException, HTTPExceptionHandler)
+app.add_exception_handler(RequestValidationError, DataValidationExceptionHandler)
+app.add_exception_handler(Exception, GlobalExceptionHandler)
 
 @app.get("/")
-def read_root():
+async def read_root():
     logger.info("Hello World")
     return {"Hello": "World"}
 
-app.include_router(router=item_router, prefix="/v1/items", tags=["Items"])
-app.include_router(router=response_router, prefix="/v1/responses", tags=["Responses"])
+@app.get("/health")
+async def health_check():
+    return {"status" : "OK"}
+
+@app.get("/info")
+async def app_info():
+    return {
+        "app_name": settings.APP_NAME,
+        "api_prefix": settings.API_PREFIX
+    } 
+
+app.include_router(router=item_router, prefix=f"{settings.API_PREFIX}/items", tags=["Items"])
+app.include_router(router=response_router, prefix=f"{settings.API_PREFIX}/responses", tags=["Responses"])
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True, lifespan="on")
+    reload = True if settings.IS_DEBUG else False
+    uvicorn.run(app="main:app", host="0.0.0.0", port=int(settings.APP_PORT), reload=reload, lifespan="on")
