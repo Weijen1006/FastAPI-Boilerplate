@@ -10,7 +10,7 @@ class Pagination(BaseModel):
 
 class APISuccessResponse(BaseModel):
     status: str = "success"
-    statusCode: int = 200
+    status_code: int = 200
     data: Optional[Union[List[Dict[str, Any]], Dict[str, Any]]] = []
     message: Optional[str] = "success"
     pagination: Optional[Pagination] = None
@@ -18,29 +18,29 @@ class APISuccessResponse(BaseModel):
     def __init__(self, status: str = "success", status_code: int = 200, message: str = "success", data: Any = None):
         super().__init__()
         self.status = "success"
-        self.statusCode = status_code
+        self.status_code = status_code
         self.message = message
         if data:
             self.data = jsonable_encoder(data)
 
 class APIErrorResponse(BaseModel):
     status: str = "error"
-    statusCode: int = 400
+    status_code: int = 400
     data: Optional[Union[List[Dict[str, Any]], Dict[str,Any]]] = []
     message: Optional[str] = "error"
-    errorObject: Optional [Dict[str, Any]] = None
-    requestId: str
+    error_object: Optional [Dict[str, Any]] = None
+    request_id: str
 
 class HTTPErrorDetails(BaseModel):
     message: Optional[str] = None
     details: Optional[str] = None
     timestamp: Optional[str] = None
     path: Optional[str] = None
-    requestBody: Optional[str] = None
-    requestHeader: Optional[str] = None
+    request_body: Optional[str] = None
+    request_header: Optional[str] = None
 
 class HTTPErrorResponse(BaseModel):
     status: str = "error"
-    statusCode: int = "400"
+    status_code: int = "400"
     error: HTTPErrorDetails
-    requestId: str
+    request_id: str

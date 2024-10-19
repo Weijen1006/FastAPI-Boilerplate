@@ -11,10 +11,10 @@ async def LogRequestHandler(request: Request, call_next):
     start_time = time.time()
     body = (await request.body()).decode()
     if body and len(body) <= settings.LOG_MAX_LENGTH:
-        body = json.dump(json.loads(body))
+        body = json.dumps(json.loads(body))
     else:
         body = ""
-    request.state.requestId = str(uuid.uuid4())
+    request.state.request_id = str(uuid.uuid4())
     request.state.start_time = start_time
     request.state.body = body
     host = getattr(getattr(request, "client", None), "host", None)
@@ -38,7 +38,7 @@ async def LogRequestHandler(request: Request, call_next):
         if response_body:
             response_body_content = response_body[0].decode("utf-8")
 
-    message = f"{host}:{port} - '{request.state.requestId} {request.method} {url}' {response.status_code} {status_phrase} {body} {formatted_process_time}ms {response_body_content}"
+    message = f"{host}:{port} - '{request.state.request_id} {request.method} {url}' {response.status_code} {status_phrase} {body} {formatted_process_time}ms {response_body_content}"
     if response.status_code >= 200 and response.status_code < 300:
         logger.info(message)
     else:
@@ -46,13 +46,13 @@ async def LogRequestHandler(request: Request, call_next):
 
     if url.startswith(settings.API_PREFIX):
         log = (LogRequest(
-            requestId=request.state.requestId,
-            requestHeader= str(dict(request.headers)),
-            requestBody= body,
-            responseStatus= response.status_code,
-            responseBody=response_body_content,
-            dateCreated=request.state.start_time,
-            executionTime=formatted_process_time
+            request_id=request.state.request_id,
+            request_header=str(dict(request.headers)),
+            request_body=body,
+            response_status=response.status_code,
+            response_body=response_body_content,
+            date_created=request.state.start_time,
+            execution_time=formatted_process_time
             ))
         logger.info(log)
 
