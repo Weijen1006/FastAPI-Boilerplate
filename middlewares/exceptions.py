@@ -5,12 +5,13 @@ from models.exception import APIErrorException
 from models.response import APIErrorResponse, HTTPErrorDetails, HTTPErrorResponse
 from utils.logger import logger
 import uuid, sys
-from datetime import datetime
+import datetime
 from configs import constants
 
 async def APIExceptionHandler(request: Request, exception: APIErrorException):
     error_id = getattr(request.state, "request_id", "")
     logger.error(constants.ApiErrorMessage.API_RESPONSE_ERROR.value)
+    logger.error(exception)
     response = APIErrorResponse(
         status="error",
         status_code=exception.status_code if isinstance(exception, APIErrorException) else 500,
@@ -27,10 +28,11 @@ async def APIExceptionHandler(request: Request, exception: APIErrorException):
 async def HTTPExceptionHandler(request: Request, exception: HTTPException):
     error_id = getattr(request.state, "request_id", str(uuid.uuid4()))
     logger.error(constants.ApiErrorMessage.HTTP_ERROR.value)
+    logger.error(exception)
     error_details = HTTPErrorDetails(
         message=str(exception.detail),
         details=str(exception),
-        timestamp=str(datetime.now()),
+        timestamp=str(datetime.datetime.now()),
         path=request.url._url,
         request_body=await request.body(),
         request_method=request.method,
@@ -57,7 +59,7 @@ async def GlobalExceptionHandler(request: Request, exception: Exception):
     error_details = HTTPErrorDetails(
         message=str(exception_name),
         details=str(exception_value),
-        timestamp=str(datetime.now()),
+        timestamp=str(datetime.datetime.now()),
         path=url,
         request_body=body,
         request_method=request.method,

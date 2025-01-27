@@ -2,8 +2,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.exceptions import RequestValidationError
 import uvicorn
-from controllers.items import router as item_router
-from controllers.responses import router as response_router
+from controllers.admin.auth import router as auth_router
+from controllers.admin.users import router as user_router
+from controllers.admin.items import router as item_router
+from controllers.public.responses import router as response_router
 from utils.logger import LoggerUtils, logger
 from models.exception import APIErrorException
 from middlewares.request_logger import LogRequestHandler
@@ -45,8 +47,10 @@ async def app_info():
         "api_prefix": settings.API_PREFIX
     } 
 
-app.include_router(router=item_router, prefix=f"{settings.API_PREFIX}/items", tags=["Items"])
-app.include_router(router=response_router, prefix=f"{settings.API_PREFIX}/responses", tags=["Responses"])
+app.include_router(router=auth_router, prefix=f"{settings.API_PREFIX}/auth", tags=["Auth"])
+app.include_router(router=item_router, prefix=f"{settings.API_PREFIX}/admin/items", tags=["Items"])
+app.include_router(router=response_router, prefix=f"{settings.API_PREFIX}/public/responses", tags=["Responses"])
+app.include_router(router=user_router, prefix=f"{settings.API_PREFIX}/users", tags=["Users"])
 
 if __name__ == "__main__":
     reload = True if settings.IS_DEBUG else False
