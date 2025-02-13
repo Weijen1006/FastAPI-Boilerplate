@@ -23,7 +23,7 @@ def with_role(required_role: str):
         return wrapper
     return decorator
 
-def async_with_role(required_role: list):
+def async_with_role(required_role: str):
     def decorator(func: Callable):
         @wraps(func)
         async def wrapper(*args, **kwargs):

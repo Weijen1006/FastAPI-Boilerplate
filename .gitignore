@@ -29,14 +29,9 @@ pytest.xml
 *.cover
 *.log
 
-# Dependency files
-Pipfile.lock
-poetry.lock
-requirements.txt
-
 # Local environment variables
 .env
-*.env
+.env*
 
 # Docker files
 docker-compose.override.yml
