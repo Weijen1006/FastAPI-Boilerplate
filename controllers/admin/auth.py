@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from auth.auth_handler import AuthHandler
+from auth.auth_handler import encode_jwt
 from utils.logger import LoggerUtils
 from models.exception import APIErrorException
 from models.auth import AuthLoginRequest
@@ -17,8 +17,7 @@ def login(request: AuthLoginRequest):
     #TODO add mechanism to verify user identity, through username/password in db/redis, OAuth etc
 
     # Create jwt after the user identity is verified and fetched
-    auth_handler = AuthHandler()
-    user_data = {"user_id": "1234", "username": request.user_name, "role": "admin"}
-    token = auth_handler.encode_jwt(user_data)
+    user_data = {"user_id": "1234", "user_name": request.user_name, "role": "admin"}
+    token = encode_jwt(user_data)
     print(f"Generated Token: {token}")
     return APISuccessResponse(data=token)

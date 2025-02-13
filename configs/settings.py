@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv, find_dotenv
+from models.user import UserRoleEnum
 
 load_dotenv(find_dotenv(), verbose=True)
 
@@ -13,5 +14,5 @@ JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "Placeholder")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 JWT_EXPIRED_IN_SECOND = os.getenv("JWT_EXPIRED_IN_SECOND", 3600)
 
-ROLE_HIERARCHY = ["user", "admin", "super admin"]
+ROLE_HIERARCHY = [UserRoleEnum.USER.value, UserRoleEnum.ADMIN.value, UserRoleEnum.SUPER_ADMIN.value]
 LOG_MAX_LENGTH = 2500
