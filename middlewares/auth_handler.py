@@ -33,9 +33,8 @@ def async_with_role(required_role: list):
             elif current_user.role not in [role for role in ROLE_HIERARCHY]:
                 raise HTTPException(status_code=403, detail=f"Invalid role: {current_user.role}")
 
-            for role in required_role:
-                if not has_permission(current_user.role, role):
-                    raise HTTPException(status_code=403, detail=f"Missing permission for: {role}")
+            if not has_permission(current_user.role, required_role):
+                raise HTTPException(status_code=403, detail=f"Missing permission for: {required_role}")
             
             return await func(*args, **kwargs)
         return wrapper

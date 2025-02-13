@@ -96,5 +96,6 @@ def get_current_user(token: str = Depends(bearer_auth)) -> UserData:
         user = UserData(user_id=payload.get("user_id"), user_name=payload.get("user_name"), role=payload.get("role"))
 
         return user
-    except:
-        raise HTTPException(status_code=404, detail="User not found")
+    except Exception as e:
+        logger.error(f"{e}")
+        raise HTTPException(status_code=404, detail=f"User not found")
