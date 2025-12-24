@@ -5,6 +5,7 @@ from configs import settings
 import time, json, uuid, http
 from utils.logger import logger
 from models.request_logger import LogRequest
+from middlewares.exceptions import GlobalExceptionHandler
 
 async def LogRequestHandler(request: Request, call_next):
     url = f"{request.url.path}?{request.query_params}" if request.query_params else request.url.path
@@ -19,8 +20,11 @@ async def LogRequestHandler(request: Request, call_next):
     request.state.body = body
     host = getattr(getattr(request, "client", None), "host", None)
     port = getattr(getattr(request, "client", None), "port", None)
-
-    response: Response = await call_next(request)
+    try:
+        response: Response = await call_next(request)
+    except Exception as e:
+        logger.error(f"Exception in LogRequestHandler: {e}", exc_info=True)
+        response = await GlobalExceptionHandler(request, e)
     process_time = (time.time() - start_time) * 1000
     formatted_process_time = "{0:.2f}".format(process_time)
 
