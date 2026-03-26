@@ -34,6 +34,13 @@ FastAPI Template/
 |   `-- user.py
 |-- services/
 |   `-- item_service.py
+|-- tests/
+|   |-- e2e/
+|   |   `-- test_placeholder.py
+|   |-- integration/
+|   |   `-- test_placeholder.py
+|   `-- unit/
+|       `-- test_placeholder.py
 |-- utils/
 |   `-- logger.py
 |-- .env
@@ -93,6 +100,12 @@ FastAPI Template/
 - `exception.py` defines the custom application exception type
 - `request_logger.py` defines the structured log model
 - `sample_data.py` provides static sample response data used by the public demo endpoints
+
+### `tests/`
+
+- `unit/` is for isolated tests around services, helpers, and business logic
+- `integration/` is for tests that cover module and database interactions
+- `e2e/` is for full request-flow and API behavior tests
 
 ### `utils/`
 
